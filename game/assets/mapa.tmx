@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" name="pacman-tiles" tilewidth="16" tileheight="16">
+  <image source="pacman-tiles.png" width="368" height="368"/>
+ </tileset>
+ <layer name="Pacman" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt13dIVWEYx/Fz3XtUjoimRFvLaBClqWlZjsQ0laKijGiQotEgGlQUTaJdpFlENiSaNIwywoo0ZxJNS9tERUXkqL43nj9E7sV74/2jP84DH368zznnfR8PB+QaNE2zgS3sYA8HOMIJznCBK9zgDg94wgveaIf26AAf+MJPU1P+6GihACvuDVQ0X5DsNwjBGCzrIRiKYRguvRGSIzEKIQiVXhjCESHrSEXzRcl+4xCN8bKOQSziEC+9BMlETEISkqWXglSkyXqKovmmyn7TMB0zZD0Ts5CO2dKbIzkX8zAfC6S3EBnIlHWWovmyNcu/KWtsVDTfJtlvC7Zim6y3S+7ATuzCbuzBXuyT6wckDyIHubLOUzTfYc30359voldgonfWzPOXFM13GVdwFYW4Jvtfxw0U4ab0bkkW4zbu4K707qEEpbiPMkXzlaMClahCtZxXo1n2ndVKvkQd6vEKrxXN9wZv8Q7v8UHO+yj5CZ/xRdZf8Q3fZf1D8ica0IgmNCuar63342Aw3Xcz029JRflwji/84G88U87tJNmZ7IKu6Ibu6IEAud5TshfZG33QF/0Maubrzz4DEIggDJTzgi14P3//18l9IWQoRiMM4Yrmi2CfMYhEFMbKedGSE8gYxCIO8ZiIBLmeKJlEJmMyUpCqaL40C9+TUboV92Yomi9Tzswis7FI1ovJJViKZdJbLrmCXIlVWC29NeRarJP1ekXzbWj1TjZb8Y5a2t/quRxF8+WyzyHkyf5HJI9KHiPzcRwncBKnUCDXT0uekTxHnscFRfNdNPO+Ck30i0z0is08X6JovlLZv4wsRwUqUYVqPECN3PNQ8hH5GE/wFM/wHLV4IffUKZqv/h+/t7Y0KJqvkX2a0Ixf+G3clx90BtjAFnawhwMc4QRnuMAVbnCHBzzhBW8bNfPppZdeeumll1566aXX/1R/ALSrnpU=
+  </data>
+ </layer>
+</map>
