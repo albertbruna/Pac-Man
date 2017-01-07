@@ -2,26 +2,26 @@
  * Created by Albert on 05/01/2017.
  */
 
-var game = new Phaser.Game(448, 448, Phaser.AUTO, {init: init, reload: reload, create:create, checkKeys:checkKeys, checkDirection:checkDirection, turn:turn, move:move, eatDot:eatDot, update:update});
+var game = new Phaser.Game(448, 448, Phaser.AUTO,' ',{init: init, reload: reload, create:create, checkKeys:checkKeys, checkDirection:checkDirection, turn:turn, move:move, moveGhosts:moveGhosts, eatDot:eatDot, pokman_return:pokman_return, update:update});
 
-map = null;
-layer = null;
-pacman = null;
+var map = null;
+var layer = null;
+var pacman = null;
 
-safetile = 25;
-gridsize = 16;
+var safetile = 25;
+var gridsize = 16;
 
-speed = 100;
-threshold = 3;
+var speed = 100;
+var threshold = 3;
 
-marker = new Phaser.Point();
-turnPoint = new Phaser.Point();
+var marker = new Phaser.Point();
+var turnPoint = new Phaser.Point();
 
-directions = [ null, null, null, null, null ];
-opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ];
+var directions = [ null, null, null, null, null ];
+var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ];
 
-current = Phaser.NONE;
-turning = Phaser.NONE;
+var current = Phaser.NONE;
+var turning = Phaser.NONE;
 
 
 function init() {
@@ -39,7 +39,7 @@ function reload() {
     game.load.image('dot', 'assets/dot.png');
     game.load.image('tiles', 'assets/pacman-tiles.png');
     game.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
-    game.load.spritesheet('ghost', 'assets/car.png', 32, 32);
+    game.load.spritesheet('ghost', 'assets/ghost.png', 32, 32);
     game.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
 }
 
@@ -55,44 +55,26 @@ function create() {
     dots.setAll('y', 0, false, false, 1);
 
     //  Pacman should collide with everything except the safe tile
-    map.setCollisionByExclusion([this.safetile], true, this.layer);
+    map.setCollisionByExclusion([safetile], true, layer);
 
     //  Position Pacman at grid location 14x17 (the +8 accounts for his anchor)
     pacman = game.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
+    ghost = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'ghost', 0);
+
     pacman.anchor.set(0.5);
+    ghost.anchor.set(0.5);
+
     pacman.animations.add('munch', [0, 1, 2, 1], 5, true);
-
-    game.physics.arcade.enable(pacman);
-    pacman.body.setSize(16, 16, 0, 0);
-
-    cursors = input.keyboard.createCursorKeys();
-
     pacman.play('munch');
-    move(Phaser.LEFT);
-
-    ghost = this.add.sprite((9 * 8), (10 * 12), 'ghost', 0);
     ghost.play('munch');
 
-    ghost.anchor.set(0.5);
+    game.physics.arcade.enable(pacman);
     game.physics.arcade.enable(ghost);
+    pacman.body.setSize(16, 16, 0, 0);
     ghost.body.setSize(16, 16, 0, 0);
-    // Ghosts
-    /*
-     inky = game.add.sprite((11 * 16) + 8, (11 * 16) + 8, 'ghosts', 0);
-     clyde = game.add.sprite((14 * 16) + 8, (13 * 16) + 8, 'ghosts', 4);
-     pinky = game.add.sprite((11 * 16) + 8, (13 * 16) + 8, 'ghosts', 8);
-     blinky = game.add.sprite((14 * 16) + 8, (11 * 16) + 8, 'ghosts', 12);
 
-     intro = game.add.audio('intro');
-     intro.volume = 0.5;
-     intro.play();
-
-     eat = game.add.audio('eat');
-     eat.volume = 0.3;
-
-     eatG = game.add.audio('eatG');
-     eatG.volume = 0.4;
-     */
+    cursors = game.input.keyboard.createCursorKeys();
+    //move(Phaser.LEFT);
 }
 
 function checkKeys() {
@@ -186,6 +168,17 @@ function move(direction) {
     current = direction;
 }
 
+function moveGhosts(){
+    ghost.body.velocity.x = -speed;
+
+    if(game.physics.arcade.collide(ghost, layer) != true) {
+        ghost.body.velocity.y = speed;
+        if(game.physics.arcade.collide(ghost, layer) != true) {
+            ghost.body.velocity.x = speed;
+        }
+    }
+}
+
 function eatDot(pacman, dot) {
     dot.kill();
 
@@ -195,7 +188,7 @@ function eatDot(pacman, dot) {
      }*/
 }
 
-function pokman_return () {
+function pokman_return() {
     if(pacman.body.x > 448){
         pacman.body.x = pacman.body.x % 448;
     }
@@ -206,9 +199,6 @@ function update() {
     game.physics.arcade.collide(pacman, layer);
     game.physics.arcade.overlap(pacman, dots, eatDot, null, this);
 
-    checkKeys();
-    pokman_return();
-
     marker.x = math.snapToFloor(Math.floor(pacman.x), gridsize) / gridsize;
     marker.y = math.snapToFloor(Math.floor(pacman.y), gridsize) / gridsize;
 
@@ -218,9 +208,13 @@ function update() {
     directions[3] = map.getTileAbove(layer.index, marker.x, marker.y);
     directions[4] = map.getTileBelow(layer.index, marker.x, marker.y);
 
+    checkKeys();
+
     if (turning !== Phaser.NONE) {
         turn();
     }
+
+    pokman_return();
 }
 
-game.state.add('Game', Pacman, true);
+//game.state.add('Game', Pacman, true);
