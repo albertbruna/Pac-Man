@@ -1,7 +1,6 @@
-/**
+/*
  * Created by Albert on 05/01/2017.
  */
-
 var game = new Phaser.Game(448, 448, Phaser.AUTO,' ',{init: init, reload: reload, create:create, checkKeys:checkKeys, checkDirection:checkDirection, turn:turn, move:move, moveGhosts:moveGhosts, eatDot:eatDot, pokman_return:pokman_return, update:update});
 
 var map = null;
@@ -171,11 +170,12 @@ function move(direction) {
 function moveGhosts(){
     ghost.body.velocity.x = -speed;
 
-    if(game.physics.arcade.collide(ghost, layer) != true) {
-        ghost.body.velocity.y = speed;
-        if(game.physics.arcade.collide(ghost, layer) != true) {
+    if(!game.physics.arcade.collide(ghost, layer)) {
             ghost.body.velocity.x = speed;
+            ghost.body.velocity.y = -speed
         }
+    else{
+        Math.floor.random();
     }
 }
 
@@ -218,7 +218,7 @@ function update() {
 }
 
 //game.state.add('Game', Pacman, true);
-=======
+
 /**
  * Created by Albert on 05/01/2017.
  */
@@ -426,5 +426,4 @@ function update() {
     }
 }
 
-game.state.add('Game', Pacman, true);
->>>>>>> origin/master
+//game.state.add('Game', Pacman, true);
