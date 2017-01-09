@@ -5,7 +5,7 @@ var Pacman = function (game) {
 	this.map = null;
 	this.layer = null;
 	this.pacman = null;
-    this.pinky = null;
+	this.pinky = null;
 
 	this.safetile = 25;
 	this.gridsize = 16;
