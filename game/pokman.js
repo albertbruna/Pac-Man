@@ -1,11 +1,11 @@
-/*
- * Created by Albert on 05/01/2017.
- */
-var game = new Phaser.Game(448, 448, Phaser.AUTO,' ',{init: init, reload: reload, create:create, checkKeys:checkKeys, checkDirection:checkDirection, turn:turn, move:move, moveGhosts:moveGhosts, eatDot:eatDot, pokman_return:pokman_return, update:update});
+
+
+var game = new Phaser.Game(448, 448, Phaser.AUTO,' ' , {init: init, reload: reload, create:create, checkKeys:checkKeys, checkDirection:checkDirection, turn:turn, move:move, moveGhosts:moveGhosts, eatDot:eatDot, pokman_return:pokman_return, update:update});
 
 var map = null;
 var layer = null;
 var pacman = null;
+var dots = null;
 
 var safetile = 25;
 var gridsize = 16;
@@ -35,8 +35,9 @@ function init() {
 }
 
 function reload() {
-    game.load.image('dot', 'assets/dot.png');
+
     game.load.image('tiles', 'assets/pacman-tiles.png');
+    game.load.image('dot', 'assets/dot.png');
     game.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
     game.load.spritesheet('ghost', 'assets/ghost.png', 32, 32);
     game.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -58,7 +59,7 @@ function create() {
 
     //  Position Pacman at grid location 14x17 (the +8 accounts for his anchor)
     pacman = game.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
-    ghost = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'ghost', 0);
+    ghost = game.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'ghost', 0);
 
     pacman.anchor.set(0.5);
     ghost.anchor.set(0.5);

@@ -22,7 +22,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/..\/Pacman\/PACMAN\/issue-005\/assets\/pacman-tiles.png",
+         "image":"pacman-tiles.png",
          "imageheight":368,
          "imagewidth":368,
          "margin":0,
