@@ -5,12 +5,12 @@ var Pacman = function (game) {
 	this.map = null;
 	this.layer = null;
 	this.pacman = null;
-	this.pinky = null;
+	this.jessie = null;
 
 	this.safetile = 25;
 	this.gridsize = 16;
 
-	this.speed = 150;
+	this.speed = 100;
 	this.threshold = 3;
 
 	this.marker = new Phaser.Point();
@@ -22,8 +22,10 @@ var Pacman = function (game) {
 	this.current = Phaser.NONE;
 	this.turning = Phaser.NONE;
 
-    this.i_ghost_speed = 0;
-    this.ghost_speed = [{x:this.speed, y:0}, {x:-this.speed, y:0}, {x:0, y:this.speed}, {x:0, y:-this.speed}];
+    this.i_jessie_speed= 3;
+    this.i_meawth_speed = 1;
+    this.i_james_speed = 2;
+    this.ghost_speed = [{x:this.speed, y:0}, {x:-(this.speed), y:0}, {x:0, y:this.speed}, {x:0, y:-(this.speed)}];
 
     this.score = null;
     this.scoreP = null;
@@ -49,8 +51,8 @@ Pacman.prototype = {
 		this.load.image('dot', 'assets/dot.png');
 		this.load.image('tiles', 'assets/pacman-tiles.png');
 		this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
-        this.load.spritesheet('ghost', 'assets/ghost.png', 19.2, 19.2);
-		this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.spritesheet('ghost', 'assets/ghosts.png', 19.2, 19.2);
+        this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.audio('intro', 'sounds/intro.mp3');
 
 		//  Needless to say, graphics (C)opyright Namco
@@ -77,22 +79,33 @@ Pacman.prototype = {
 
 		//  Position Pacman at grid location 14x17 (the +8 accounts for his anchor)
 		this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
-        this.pinky = this.add.sprite((11 * 16) + 8, (13 * 16) + 8, 'ghost', 0);
+        this.jessie = this.add.sprite(185, 152, 'ghost', 0); //2
+        this.meowth = this.add.sprite(215, 152, 'ghost', 4); //1
+        this.james = this.add.sprite(155, 152, 'ghost', 8); //0
+        //this.jessie = this.add.sprite((11 * 16) + 8, (13 * 16) + 8, 'ghost', 0);
 
 		this.pacman.anchor.set(0.5);
-        this.pinky.anchor.set(0.5);
+        this.jessie.anchor.set(0.5);
+        this.meowth.anchor.set(0.5);
+        this.james.anchor.set(0.5);
 
 		this.pacman.animations.add('munch', [0, 1, 2, 1], 5, true);
 
 		this.physics.arcade.enable(this.pacman);
-        this.physics.arcade.enable(this.pinky);
+        this.physics.arcade.enable(this.jessie);
+        this.physics.arcade.enable(this.meowth);
+        this.physics.arcade.enable(this.james);
 		this.pacman.body.setSize(16, 16, 0, 0);
-        this.pinky.body.setSize(16, 16, 0, 0);
+        this.jessie.body.setSize(16, 16, 0, 0);
+        this.meowth.body.setSize(16, 16, 0, 0);
+        this.james.body.setSize(16, 16, 0, 0);
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.pacman.play('munch');
-        this.pinky.play('munch');
+        this.jessie.play('munch');
+        this.meowth.play('munch');
+        this.james.play('munch');
 
 		this.move(Phaser.LEFT);
 
@@ -217,18 +230,20 @@ Pacman.prototype = {
 
 	},
 
-    moveGhost: function () {
-        this.directionGhost();
+    moveGhost: function (ghost,speed) {
+        this.directionGhost(ghost,speed);
     },
 
-    directionGhost: function () {
-        if(!this.physics.arcade.collide(this.pinky,this.layer)){
-            this.pinky.body.speed.x = this.ghost_speed[this.i_ghost_speed].x;
-            this.pinky.body.speed.y = this.ghost_speed[this.i_ghost_speed].y;
+    directionGhost: function (ghost,speed) {
+
+        if(!this.physics.arcade.collide(ghost,this.layer)){
+            ghost.body.velocity.x = this.ghost_speed[speed].x;
+            ghost.body.velocity.y = this.ghost_speed[speed].y;
         }
-        else{
-            this.i_ghost_speed = Math.floor(Math.random()*4);
-        }
+        else if(ghost == this.jessie) this.i_jessie_speed = Math.floor(Math.random() * 4);
+            else if (ghost == this.meowth) this.i_meawth_speed = Math.floor(Math.random() * 4);
+                else this.i_james_speed = Math.floor(Math.random() * 4);
+
     },
 
 	eatDot: function (pacman, dot) {
@@ -253,13 +268,28 @@ Pacman.prototype = {
 		//else this.pacman.body.x = this.pacman.body.x;
 	},
 
+    ghost_collision: function (ghost) {
+	    if(this.physics.arcade.collide(this.pacman, ghost)){
+	        this.pacman.kill();
+            this.scoreP = 0;
+            this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
+            this.pacman.anchor.set(0.5);
+            this.pacman.animations.add('munch', [0, 1, 2, 1], 5, true);
+            this.physics.arcade.enable(this.pacman);
+            this.pacman.body.setSize(16, 16, 0, 0);
+            this.pacman.play('munch');
+            this.dots.callAll('revive');
+        }
+
+    },
+
 	update: function () {
 
 		this.physics.arcade.collide(this.pacman, this.layer);
 		this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
 
-        this.physics.arcade.collide(this.pinky, this.layer);
-        this.physics.arcade.overlap(this.pinky, this.dots, this.eatDot, null, this);
+        //this.physics.arcade.collide(this.jessie, this.layer);
+        //this.physics.arcade.overlap(this.jessie, this.dots, this.eatDot, null, this);
 
 		this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
 		this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
@@ -270,11 +300,17 @@ Pacman.prototype = {
 		this.directions[3] = this.map.getTileAbove(this.layer.index, this.marker.x, this.marker.y);
 		this.directions[4] = this.map.getTileBelow(this.layer.index, this.marker.x, this.marker.y);
 
-        this.score.text = "Puntos: " + this.scoreP;
+        this.score.text = "Score: " + this.scoreP;
 
 		this.checkKeys();
-        this.moveGhost();
+        this.moveGhost(this.jessie, this.i_jessie_speed);
+        this.moveGhost(this.meowth, this.i_meawth_speed);
+        this.moveGhost(this.james, this.i_james_speed);
+        //this.directionGhost();
 		this.pokmanReturn();
+        this.ghost_collision(this.jessie);
+        this.ghost_collision(this.meowth);
+        this.ghost_collision(this.james);
 
 		if (this.turning !== Phaser.NONE)
 		{
