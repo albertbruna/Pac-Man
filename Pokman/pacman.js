@@ -6,6 +6,8 @@ var Pacman = function (game) {
 	this.layer = null;
 	this.pacman = null;
 	this.jessie = null;
+    this.meowth = null;
+    this.james = null;
 
 	this.safetile = 25;
 	this.gridsize = 16;
@@ -30,6 +32,8 @@ var Pacman = function (game) {
     this.score = null;
     this.scoreP = null;
     this.cont = null;
+
+    this.lifes = 3;
 
     //this.jessiekilled = null;
 
@@ -92,7 +96,7 @@ Pacman.prototype = {
 		this.pacman.play('munch');
 		this.move(Phaser.LEFT);
 
-        this.score = this.add.text(135, 270, "Puntos: ", { fontSize: "18px", fill: "#fff" });
+        this.score = this.add.text(135, 270, "Score: ", { fontSize: "18px", fill: "#fff" });
         this.intro = this.add.audio('intro');
         this.intro.volume = 0.5;
         this.intro.play();
@@ -102,6 +106,7 @@ Pacman.prototype = {
 	},
 
     createGhosts: function(){
+
         this.jessie = this.add.sprite(185, 152, 'ghost', 0); //2
         this.meowth = this.add.sprite(215, 152, 'ghost', 4); //1
         this.james = this.add.sprite(155, 152, 'ghost', 8); //0
@@ -251,8 +256,10 @@ Pacman.prototype = {
 	},
 
     moveGhost: function (ghost,speed) {
+
         this.directionGhost(ghost,speed);
-    },
+
+	},
 
     directionGhost: function (ghost,speed) {
 
@@ -276,7 +283,7 @@ Pacman.prototype = {
 
 		if (this.dots.total === 0) {
 
-		    this.createmaplevel2();
+		    //this.createmaplevel2();
 			this.dots.callAll('revive');
 		}
 
@@ -311,6 +318,7 @@ Pacman.prototype = {
                 this.scoreP += 50;
             }
         }
+
 	},
 
     // If pokman pass the limit of canvas
@@ -325,16 +333,25 @@ Pacman.prototype = {
 	},
 
     ghost_collision: function (ghost) {
-	    if(this.physics.arcade.collide(this.pacman, ghost) && (this.cont < 50 || this.cont >90)){
+
+	    if(this.physics.arcade.collide(this.pacman, ghost) && (this.cont < 50 || this.cont > 90)){
 	        this.pacman.kill();
             this.scoreP = 0;
-            this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
-            this.pacman.anchor.set(0.5);
-            this.pacman.animations.add('munch', [0, 1, 2, 1], 5, true);
-            this.physics.arcade.enable(this.pacman);
-            this.pacman.body.setSize(16, 16, 0, 0);
-            this.pacman.play('munch');
-            this.dots.callAll('revive');
+            this.lifes--;
+            if(this.lifes > 0){
+                this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
+                this.pacman.anchor.set(0.5);
+                this.pacman.animations.add('munch', [0, 1, 2, 1], 5, true);
+                this.physics.arcade.enable(this.pacman);
+                this.pacman.body.setSize(16, 16, 0, 0);
+                this.pacman.play('munch');
+            }
+
+            else {
+                this.gamover = this.add.text(30, 142, "GAME OVER!", { fontSize: "48px", fill: "#fff" });
+                this.dots.callAll('revive');
+                this.lifes = 3;
+            }
         }
 
     },
@@ -343,9 +360,6 @@ Pacman.prototype = {
 
 		this.physics.arcade.collide(this.pacman, this.layer);
 		this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
-
-        //this.physics.arcade.collide(this.jessie, this.layer);
-        //this.physics.arcade.overlap(this.jessie, this.dots, this.eatDot, null, this);
 
 		this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
 		this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
@@ -359,11 +373,13 @@ Pacman.prototype = {
         this.score.text = "Score: " + this.scoreP;
 
 		this.checkKeys();
+
         this.moveGhost(this.jessie, this.i_jessie_speed);
         this.moveGhost(this.meowth, this.i_meawth_speed);
         this.moveGhost(this.james, this.i_james_speed);
-        //this.directionGhost();
+
 		this.pokmanReturn();
+
         this.ghost_collision(this.jessie);
         this.ghost_collision(this.meowth);
         this.ghost_collision(this.james);

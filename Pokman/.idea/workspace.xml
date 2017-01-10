@@ -26,8 +26,8 @@
       <file leaf-file-name="pacman.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pacman.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-444">
-              <caret line="241" column="27" selection-start-line="241" selection-start-column="27" selection-end-line="241" selection-end-column="27" />
+            <state relative-caret-position="484">
+              <caret line="347" column="13" selection-start-line="347" selection-start-column="13" selection-end-line="347" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -203,12 +203,12 @@
       <option name="presentableId" value="Default" />
       <updated>1483993018415</updated>
       <workItem from="1483993021520" duration="9622000" />
-      <workItem from="1484069357035" duration="10444000" />
+      <workItem from="1484069357035" duration="12756000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20066000" />
+    <option name="totallyTimeSpent" value="22378000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-8" width="1456" height="916" extended-state="6" />
@@ -258,8 +258,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pacman.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-444">
-          <caret line="241" column="27" selection-start-line="241" selection-start-column="27" selection-end-line="241" selection-end-column="27" />
+        <state relative-caret-position="484">
+          <caret line="347" column="13" selection-start-line="347" selection-start-column="13" selection-end-line="347" selection-end-column="13" />
           <folding />
         </state>
       </provider>
