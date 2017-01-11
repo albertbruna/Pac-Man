@@ -12,7 +12,7 @@ var Pacman = function (game) {
 	this.safetile = 25;
 	this.gridsize = 16;
 
-	this.speed = 100;
+	this.speed = 190;
 	this.threshold = 3;
 
 	this.marker = new Phaser.Point();
@@ -56,10 +56,12 @@ Pacman.prototype = {
 	preload: function () {
 
 		this.load.image('dot', 'assets/dot.png');
+        this.load.image('dot2', 'assets/dot_2.png');
 		this.load.image('tiles', 'assets/pacman-tiles.png');
-		this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+		this.load.spritesheet('pacman', 'assets/picachu.png', 32, 32);
         this.load.spritesheet('ghost', 'assets/ghosts.png', 19.2, 19.2);
         this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
+        //this.load.tilemap('map_level_2', 'assets/pacman-map_level_2.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.audio('intro', 'sounds/intro.mp3');
 
 		//  Needless to say, graphics (C)opyright Namco
@@ -78,8 +80,8 @@ Pacman.prototype = {
 		this.map.createFromTiles(25, this.safetile, 'dot', this.layer, this.dots);
 
 		//  The dots will need to be offset by 0px to put them back in the middle of the grid
-		this.dots.setAll('x', 0, false, false, 1);
-		this.dots.setAll('y', 0, false, false, 1);
+		this.dots.setAll('x', 2, false, false, 1);
+		this.dots.setAll('y', 2, false, false, 1);
 
 		//  Pacman should collide with everything except the safe tile
 		this.map.setCollisionByExclusion([this.safetile], true, this.layer);
@@ -131,13 +133,26 @@ Pacman.prototype = {
         this.physics.arcade.enable(this.meowth);
         this.physics.arcade.enable(this.james);
 
-        this.jessie.body.setSize(16, 16, 0, 0);
-        this.meowth.body.setSize(16, 16, 0, 0);
-        this.james.body.setSize(16, 16, 0, 0);
+        this.jessie.body.setSize(12, 12, 0, 0);
+        this.meowth.body.setSize(12, 12, 0, 0);
+        this.james.body.setSize(12, 12, 0, 0);
 
         this.jessie.play('munch');
         this.meowth.play('munch');
         this.james.play('munch');
+
+    },
+
+    createMapLevel2: function () {
+
+        this.dots = this.add.physicsGroup();
+
+        this.map.createFromTiles(25, this.safetile, 'dot2', this.layer, this.dots);
+
+        //  The dots will need to be offset by 0px to put them back in the middle of the grid
+        this.dots.setAll('x', 2, false, false, 1);
+        this.dots.setAll('y', 2, false, false, 1);
+
 
     },
 
@@ -257,21 +272,15 @@ Pacman.prototype = {
 
     moveGhost: function (ghost,speed) {
 
-        this.directionGhost(ghost,speed);
-
-	},
-
-    directionGhost: function (ghost,speed) {
-
         if(!this.physics.arcade.collide(ghost,this.layer)){
             ghost.body.velocity.x = this.ghost_speed[speed].x;
             ghost.body.velocity.y = this.ghost_speed[speed].y;
         }
         else if(ghost == this.jessie) this.i_jessie_speed = Math.floor(Math.random() * 4);
-            else if (ghost == this.meowth) this.i_meawth_speed = Math.floor(Math.random() * 4);
-                else this.i_james_speed = Math.floor(Math.random() * 4);
+        else if (ghost == this.meowth) this.i_meawth_speed = Math.floor(Math.random() * 4);
+        else this.i_james_speed = Math.floor(Math.random() * 4);
 
-    },
+	},
 
 	eatDot: function (pacman, dot) {
 
@@ -279,12 +288,13 @@ Pacman.prototype = {
 
         this.scoreP += 10;
         this.cont++;
-        //this.jessiekilled++;
 
 		if (this.dots.total === 0) {
 
-		    //this.createmaplevel2();
-			this.dots.callAll('revive');
+		    this.createMapLevel2();
+            this.cont = 0;
+            this.lifes = 3;
+			//this.dots.callAll('revive');
 		}
 
         if(this.cont == 50){
@@ -331,6 +341,7 @@ Pacman.prototype = {
         }
 		//else this.pacman.body.x = this.pacman.body.x;
 	},
+
 
     ghost_collision: function (ghost) {
 
