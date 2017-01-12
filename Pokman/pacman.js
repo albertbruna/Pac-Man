@@ -35,6 +35,8 @@ var Pacman = function (game) {
 
     this.lifes = 3;
 
+    this.level2 = null;
+
     //this.jessiekilled = null;
 
 };
@@ -63,6 +65,7 @@ Pacman.prototype = {
         this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
         //this.load.tilemap('map_level_2', 'assets/pacman-map_level_2.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.audio('intro', 'sounds/intro.mp3');
+        this.load.audio('teamr', 'sounds/teamr.wav');
 
 		//  Needless to say, graphics (C)opyright Namco
 
@@ -152,6 +155,16 @@ Pacman.prototype = {
         //  The dots will need to be offset by 0px to put them back in the middle of the grid
         this.dots.setAll('x', 2, false, false, 1);
         this.dots.setAll('y', 2, false, false, 1);
+
+        this.intro.stop();
+
+        this.level2 = this.add.audio('teamr');
+        this.level2.volume = 0.5;
+        this.level2.play();
+        this.intro.play();
+        this.intro.loop = true;
+
+        this.cont = 0;
 
 
     },
@@ -363,6 +376,7 @@ Pacman.prototype = {
                 this.dots.callAll('revive');
                 this.lifes = 3;
             }
+
         }
 
     },
